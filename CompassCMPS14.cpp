@@ -582,3 +582,118 @@ void CompassCMPS14::changeAddress(byte i2cAddress, byte newi2cAddress)
   if(nackCatcher != 0){return;}
 
 }
+
+byte CompassCMPS14::getCalibration()
+{
+  // Begin communication with CMPS14
+  Wire.beginTransmission(_i2cAddress);
+
+  // Tell register you want some data
+  Wire.write(Calibration_Register);
+
+  // End the transmission
+  int nackCatcher = Wire.endTransmission();
+
+  // Return if we have a connection problem 
+  if(nackCatcher != 0){return 0;}
+  
+  // Request 1 byte from CMPS14
+  nReceived = Wire.requestFrom(_i2cAddress, ONE_BYTE);
+
+  // Something has gone wrong
+  if (nReceived != ONE_BYTE) return 0;
+
+  // Read the values
+  calibration = Wire.read();
+
+  return calibration;
+}
+
+void CompassCMPS14::setCalibration(byte a)
+{
+
+  // Do we start the calibration?
+  if (a == 'g' || a == 'a' || a == 'm' || a == 'x'){
+
+    // Begin communication with CMPS14
+    Wire.beginTransmission(_i2cAddress);
+
+    // Want the Command Register
+    Wire.write(byte(0x00));
+
+    // Send some data
+    Wire.write(byte(0x98));
+
+    // End the transmission
+    int nackCatcher = Wire.endTransmission();
+
+    // Return if we have a connection problem 
+    if(nackCatcher != 0){return;}
+
+    delay(20);
+
+    // Begin communication with CMPS14
+    Wire.beginTransmission(_i2cAddress);
+
+    // Want the Command Register
+    Wire.write(byte(0x00));
+
+    // Send some data
+    Wire.write(byte(0x95));
+
+    // End the transmission
+    nackCatcher = Wire.endTransmission();
+
+    // Return if we have a connection problem 
+    if(nackCatcher != 0){return;}
+
+    delay(20);
+
+    // Begin communication with CMPS14
+    Wire.beginTransmission(_i2cAddress);
+
+    // Want the Command Register
+    Wire.write(byte(0x00));
+
+    // Send some data
+    Wire.write(byte(0x99));
+
+    // End the transmission
+    nackCatcher = Wire.endTransmission();
+
+    // Return if we have a connection problem 
+    if(nackCatcher != 0){return;}
+
+    delay(20);
+
+    // Begin communication with CMPS14
+    Wire.beginTransmission(_i2cAddress);
+
+    // Want the Command Register
+    Wire.write(byte(0x00));
+
+    // Send some data
+    switch (a){
+
+      case 'g':
+          Wire.write(byte(B10000100));
+          break;
+
+      case 'a':
+          Wire.write(byte(B10000010));
+          break;
+
+      case 'm':
+          Wire.write(byte(B10000001));
+          break;
+
+      case 'x':
+          Wire.write(byte(B10000000));
+          break;
+    }
+
+    // End the transmission
+    nackCatcher = Wire.endTransmission();
+
+  }
+}
