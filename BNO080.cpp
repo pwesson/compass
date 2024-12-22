@@ -22,7 +22,7 @@
 
 #include <Wire.h>
 
-void BNO080::SetupBMO086()
+void BNO080::SetupBNO080()
 {
   delay(1000);
 

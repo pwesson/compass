@@ -52,7 +52,7 @@
   class BNO080{
     public:
 		
-	void SetupBMO086();
+	void SetupBMO080();
 	void Restart();
 	void calibrate(byte);
 	void calibrateAGM(bool , bool , bool );
